@@ -26,7 +26,7 @@ sub dispatch_request {
             return profile {
                 my ( $date, $env1, $env2 ) =
                   profile { return ( "" . localtime, Dumper( \%ENV ), Dumper( $env ) ) } $prof->step( "data" );
-                profile { sleep 0.1 } $prof->step( "long" );
+                profile { sleep rand } $prof->step( "random_sleep" );
                 my $includes = profile { $prof->render_includes } $prof->step( "includes" );
 
                 return profile {
