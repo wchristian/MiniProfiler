@@ -38,7 +38,27 @@ sub dispatch_request {
                         200,
                         [],
                         [
-"<html><head>$includes</head><body>Hello world! $date<pre>$env2</pre></body></html>"
+                            <<"MEEP"
+<html>
+    <head>$includes</head>
+    <body>
+        <br />
+        <h1>Hello world! $date</h1>
+        <p style="text-align: justify;width: 30em;">
+            This website is running an early demo of a Perl port of
+            <a href="http://code.google.com/p/mvc-mini-profiler/">MVC-MiniProfiler</a>.
+            You can <a href="https://github.com/wchristian/MiniProfiler">check
+            out the source</a> on Github and will soon find it on a nearby CPAN
+            mirror.
+        </p>
+        <p style="text-align: justify;width: 30em;">
+            Here is an example of the Plack environment, containing the Profiler
+            object during rendering phase:
+        </p>
+        <pre>$env2</pre>
+    </body>
+</html>
+MEEP
                         ]
                     ];
                 }
