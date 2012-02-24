@@ -24,8 +24,8 @@ sub dispatch_request {
             my $prof = $env->{ +PROF };
 
             return profile {
-                my ( $date, $env1, $env2 ) =
-                  profile { return ( "" . localtime, Dumper( \%ENV ), Dumper( $env ) ) } $prof->step( "data" );
+                my ( $date, $env2 ) =
+                  profile { return ( "" . localtime, Dumper( $env ) ) } $prof->step( "data" );
                 profile { sleep rand } $prof->step( "random_sleep" );
                 my $includes = profile { $prof->render_includes } $prof->step( "includes" );
 
@@ -34,7 +34,7 @@ sub dispatch_request {
                         200,
                         [],
                         [
-"<html><head>$includes</head><body>Hello world! $date<pre>$env1</pre><pre>$env2</pre></body></html>"
+"<html><head>$includes</head><body>Hello world! $date<pre>$env2</pre></body></html>"
                         ]
                     ];
                 }
