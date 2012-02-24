@@ -10,7 +10,7 @@ use Test::InDistDir;
 use Plack::Middleware::MiniProfiler qw' PROF profile ';
 use Time::HiRes 'sleep';
 use Data::Dumper;
-$Data::Dumper::Indent = 1;
+$Data::Dumper::Indent   = 1;
 $Data::Dumper::Sortkeys = 1;
 
 sub dispatch_request {
@@ -24,8 +24,12 @@ sub dispatch_request {
             my $prof = $env->{ +PROF };
 
             return profile {
-                my ( $date, $env2 ) =
-                  profile { return ( "" . localtime, Dumper( $env ) ) } $prof->step( "data" );
+                my ( $date, $env2 ) = profile {
+                    my $env = { %{$env} };
+                    delete $env->{"Web::Dispatch.original_env"};
+                    return ( "" . localtime, Dumper( $env ) );
+                }
+                $prof->step( "data" );
                 profile { sleep rand } $prof->step( "random_sleep" );
                 my $includes = profile { $prof->render_includes } $prof->step( "includes" );
 
