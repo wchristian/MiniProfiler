@@ -95,7 +95,7 @@ sub results {
         ClientTimings        => $timing,
         Root                 => $root,
         HasTrivialTimings    => $self->{has_trivial},
-        MachineName          => $ENV{HOSTNAME} || $ENV{COMPUTERNAME} || $ENV{SERVER_ADDR},
+        MachineName          => $env->{HOSTNAME} || $env->{COMPUTERNAME} || $env->{SERVER_NAME} || $env->{SERVER_ADDR},
         Name                 => $env->{PATH_INFO},
     };
     my $json = to_json $result, { utf8 => 1, pretty => 1 };
