@@ -10,13 +10,15 @@ package Plack::Middleware::MiniProfiler;
 
 use lib '../..';
 
-use parent qw(Plack::Middleware);
+use Moo;
 use Web::MiniProfiler::Profiler;
 use Exporter 'import';
 use Plack::Request;
 use Cache::FileCache;
 use JSON 'to_json';
 use List::Util 'sum';
+
+extends 'Plack::Middleware';
 
 our @EXPORT_OK = qw( PROF profile );
 
