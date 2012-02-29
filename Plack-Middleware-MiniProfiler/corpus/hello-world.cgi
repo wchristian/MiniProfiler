@@ -31,7 +31,6 @@ sub dispatch_request {
                 }
                 $prof->step( "data" );
                 profile { sleep rand } $prof->step( "random_sleep" );
-                my $includes = profile { $prof->render_includes } $prof->step( "includes" );
 
                 return profile {
                     [
@@ -40,7 +39,7 @@ sub dispatch_request {
                         [
                             <<"MEEP"
 <html>
-    <head>$includes</head>
+    <head>{{RENDER_INCLUDES}}</head>
     <body>
         <br />
         <h1>Hello world! $date</h1>

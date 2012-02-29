@@ -20,6 +20,8 @@ use List::Util 'sum';
 
 extends 'Plack::Middleware';
 
+has render_includes_tag => ( is => 'ro', default => sub { "{{RENDER_INCLUDES}}" } );
+
 our @EXPORT_OK = qw( PROF profile );
 
 sub PROF () { 'plack.' . __PACKAGE__ . '.profiler' }
@@ -40,9 +42,25 @@ sub call {
     my $prof = $env->{ +PROF } = Web::MiniProfiler::Profiler->new;
     $res = profile { $self->app->( $env ) } $prof->step( $uri );
 
+    $self->try_insert_render_includes( $res, $prof );
+
     $self->save( $prof );
 
     return $res;
+}
+
+sub try_insert_render_includes {
+    my ( $self, $res, $prof ) = @_;
+
+    my $render_includes_tag = $self->render_includes_tag;
+    my $render_includes     = $prof->render_includes;
+
+    for ( @{ $res->[2] } ) {
+        next if ref $_;
+        $_ =~ s/$render_includes_tag/$render_includes/;
+    }
+
+    return;
 }
 
 sub save {
