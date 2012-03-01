@@ -74,10 +74,9 @@ sub build_profiled_sub {
         my @args = @_;
 
         my $env = pop @args;
-        croak "last argument to profiled sub does not seem to be an env hash" if ref $env ne 'HASH';
 
         my $prof = $env->{ +PROF };
-        croak "env hash for profiled sub does not seem to contain a profiler" if !$prof;
+        return $sub->( @args, $env ) if !$prof;
 
         return $prof->with_step( $step_name, sub { $sub->( @args, $env ) } );
     };
