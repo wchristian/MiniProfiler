@@ -15,8 +15,6 @@ auto_profile( "Web::Dispatch::call" );
 __PACKAGE__->run_if_script;
 
 sub dispatch_request {
-    (
-        '' => sub { Plack::Middleware::MiniProfiler->new },
-        '' => sub { HelloWorld->to_psgi_app },
-    );
+    my $app = HelloWorld->to_psgi_app;
+    return Plack::Middleware::MiniProfiler->wrap( $app );
 }
