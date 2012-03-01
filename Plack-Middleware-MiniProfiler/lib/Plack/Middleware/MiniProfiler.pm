@@ -23,7 +23,7 @@ extends 'Plack::Middleware';
 
 has render_includes_tag => ( is => 'ro', default => sub { "<!-- RENDER_INCLUDES -->" } );
 
-our @EXPORT_OK = qw( PROF profile );
+our @EXPORT_OK = qw( PROF profile auto_profile );
 
 sub PROF () { 'plack.' . __PACKAGE__ . '.profiler' }
 
@@ -49,6 +49,23 @@ sub call {
     $self->save( $prof );
 
     return $res;
+}
+
+sub auto_profile {
+    my ( $sub_name ) = @_;
+
+    my $old_sub = do {
+        no strict 'refs';
+        *$sub_name{CODE};
+    };
+    my $new_sub = build_profiled_sub( $old_sub, $sub_name );
+    {
+        no strict 'refs';
+        no warnings 'redefine';
+        *$sub_name = $new_sub;
+    }
+
+    return;
 }
 
 sub build_profiled_sub {
