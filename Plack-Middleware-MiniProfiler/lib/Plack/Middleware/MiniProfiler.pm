@@ -21,7 +21,7 @@ use Carp 'croak';
 
 extends 'Plack::Middleware';
 
-has render_includes_tag => ( is => 'ro', default => sub { "{{RENDER_INCLUDES}}" } );
+has render_includes_tag => ( is => 'ro', default => sub { "<!-- RENDER_INCLUDES -->" } );
 
 our @EXPORT_OK = qw( PROF profile );
 
