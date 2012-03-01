@@ -17,6 +17,7 @@ use Plack::Request;
 use Cache::FileCache;
 use JSON 'to_json';
 use List::Util 'sum';
+use Carp 'croak';
 
 extends 'Plack::Middleware';
 
@@ -38,15 +39,31 @@ sub call {
     return $res if $res;
 
     my $uri = Plack::Request->new( $env )->uri . '';
+    my $profiled_app = build_profiled_sub( $self->app, $uri );
 
     my $prof = $env->{ +PROF } = Web::MiniProfiler::Profiler->new;
-    $res = profile { $self->app->( $env ) } $prof->step( $uri );
+    $res = $profiled_app->( $env );
 
     $self->try_insert_render_includes( $res, $prof );
 
     $self->save( $prof );
 
     return $res;
+}
+
+sub build_profiled_sub {
+    my ( $sub, $step_name ) = @_;
+    return sub {
+        my @args = @_;
+
+        my $env = pop @args;
+        croak "last argument to profiled sub does not seem to be an env hash" if ref $env ne 'HASH';
+
+        my $prof = $env->{ +PROF };
+        croak "env hash for profiled sub does not seem to contain a profiler" if !$prof;
+
+        return $prof->with_step( $step_name, sub { $sub->( @args, $env ) } );
+    };
 }
 
 sub try_insert_render_includes {
