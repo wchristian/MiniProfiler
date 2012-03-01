@@ -63,7 +63,7 @@ sub template {
         <p style="text-align: justify;width: 30em;">
             This website is running an early demo of a Perl port of
             <a href="http://code.google.com/p/mvc-mini-profiler/">MVC-MiniProfiler</a>.
-            You can <a href="https://github.com/wchristian/MiniProfiler">check
+            You can <a href="https://github.com/wchristian/MiniProfiler/tree/perl/Plack-Middleware-MiniProfiler">check
             out the source</a> on Github and will soon find it on a nearby CPAN
             mirror.
         </p>
