@@ -52,13 +52,13 @@ sub call {
 }
 
 sub auto_profile {
-    my ( $sub_name ) = @_;
+    my ( $sub_name, $prof_get_sub ) = @_;
 
     my $old_sub = do {
         no strict 'refs';
         *$sub_name{CODE};
     };
-    my $new_sub = build_profiled_sub( $old_sub, $sub_name );
+    my $new_sub = build_profiled_sub( $old_sub, $sub_name, $prof_get_sub );
     {
         no strict 'refs';
         no warnings 'redefine';
@@ -69,16 +69,19 @@ sub auto_profile {
 }
 
 sub build_profiled_sub {
-    my ( $sub, $step_name ) = @_;
+    my ( $sub, $step_name, $prof_get_sub ) = @_;
+
+    $prof_get_sub ||= sub {
+        my @args = @_;
+        my $env = pop @args;
+        return $env->{ +PROF };
+    };
+
     return sub {
         my @args = @_;
-
-        my $env = pop @args;
-
-        my $prof = $env->{ +PROF };
-        return $sub->( @args, $env ) if !$prof;
-
-        return $prof->with_step( $step_name, sub { $sub->( @args, $env ) } );
+        my $prof = $prof_get_sub->( @args );
+        return $sub->( @args ) if !$prof;
+        return $prof->with_step( $step_name, sub { $sub->( @args ) } );
     };
 }
 
