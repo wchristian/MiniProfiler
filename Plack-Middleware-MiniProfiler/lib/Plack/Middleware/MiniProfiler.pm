@@ -122,9 +122,10 @@ sub _handle_static {
 
     my $content;
     $content = $self->share( $path ) if $known_files{$path};
-    $content = $self->results( $env ) if $path eq 'results';
+    return [ 200, [ 'Content-type' => 'text/plain', "Cache-Control" => "max-age=2600000" ], [$content] ] if $content;
 
-    return [ 200, [ 'Content-type', 'text/plain' ], [$content] ] if $content;
+    $content = $self->results( $env ) if $path eq 'results';
+    return [ 200, [ 'Content-type' => 'text/plain' ], [$content] ] if $content;
 
     return;
 }
