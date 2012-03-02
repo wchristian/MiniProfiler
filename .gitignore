@@ -5,3 +5,5 @@ obj
 *.sqlite
 *.user
 *.sdf
+/Plack-Middleware-MiniProfiler/.build
+/Plack-Middleware-MiniProfiler/Plack-Middleware-MiniProfiler-*
