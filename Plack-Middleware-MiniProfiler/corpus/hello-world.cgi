@@ -4,6 +4,8 @@ use CGI::Carp qw(fatalsToBrowser);
 
 package ProfiledHelloWorld;
 
+use Test::InDistDir;
+use lib 'corpus';
 use Web::Simple;
 use Web::Dispatch;
 use HelloWorld;

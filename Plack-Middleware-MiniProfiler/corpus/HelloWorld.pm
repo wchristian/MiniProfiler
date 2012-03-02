@@ -4,7 +4,6 @@ package HelloWorld;
 
 use Web::Simple;
 
-use Test::InDistDir;
 use Time::HiRes 'sleep';
 use Data::Dumper;
 use Plack::Middleware::MiniProfiler 'PROF';
