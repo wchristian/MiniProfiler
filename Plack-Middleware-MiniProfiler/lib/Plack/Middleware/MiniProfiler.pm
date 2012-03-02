@@ -141,6 +141,7 @@ sub share {
 
     my $path = eval { dist_file( $dist, $file ) };
     $path ||= "../StackExchange.Profiling/UI/$file";
+    $path = "../StackExchange.Profiling/UI/" . ucfirst $file if !-f $path;
 
     $cache->{$file} = read_file $path;
 
