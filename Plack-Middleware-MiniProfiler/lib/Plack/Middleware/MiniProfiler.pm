@@ -23,12 +23,14 @@ use File::Slurp 'read_file';
 
 extends 'Plack::Middleware';
 
-has render_includes_tag => ( is => 'ro', default => sub { "<!-- RENDER_INCLUDES -->" } );
+has render_includes_tag => ( is => 'ro', default => \&render_includes_tag_default );
 
 our @EXPORT_OK = qw( PROF profile auto_profile );
 my %file_cache;
 
 sub PROF () { 'plack.' . __PACKAGE__ . '.profiler' }
+
+sub render_includes_tag_default { "<!-- RENDER_INCLUDES -->" }
 
 sub profile (&;$) {
     my ( $to_profile, $step ) = @_;
