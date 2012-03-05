@@ -34,6 +34,8 @@ sub {
     has current_step   => ( is => 'rw' );
     has depth          => ( is => 'ro', default => sub { -1 } );
     has children       => ( is => 'ro', default => sub { [] } );
+    has name         => ( is => 'ro', required => 1 );
+    has machine_name => ( is => 'ro', required => 1 );
   }
   ->();
 

@@ -46,7 +46,10 @@ sub call {
     my $uri = Plack::Request->new( $env )->uri . '';
     my $profiled_app = build_profiled_sub( $self->app, $uri );
 
-    my $prof = $env->{ +PROF } = Web::MiniProfiler::Profiler->new;
+    my $prof = $env->{ +PROF } = Web::MiniProfiler::Profiler->new(
+        name         => $env->{PATH_INFO},
+        machine_name => $self->machine_name( $env )
+    );
     $res = $profiled_app->( $env );
 
     $self->try_insert_render_includes( $res, $prof );
@@ -177,12 +180,17 @@ sub results {
         ClientTimings        => $timing,
         Root                 => $root,
         HasTrivialTimings    => $self->{has_trivial},
-        MachineName          => $env->{HOSTNAME} || $env->{COMPUTERNAME} || $env->{SERVER_NAME} || $env->{SERVER_ADDR},
-        Name                 => $env->{PATH_INFO},
+        MachineName          => $thing->machine_name,
+        Name                 => $thing->name,
     };
     my $json = to_json $result, { utf8 => 1, pretty => 1 };
 
     return $json;
+}
+
+sub machine_name {
+    my ( $self, $env ) = @_;
+    return $env->{HOSTNAME} || $env->{COMPUTERNAME} || $env->{SERVER_NAME} || $env->{SERVER_ADDR};
 }
 
 sub client_timing {
